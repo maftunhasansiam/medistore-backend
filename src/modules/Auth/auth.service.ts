@@ -2,7 +2,7 @@ import { create } from "node:domain";
 import { prisma } from "../../lib/prisma";
 
 const createUserIntoDb = async (payload: any) => {
-    const result = await prisma.user.create({ data: payload });
+    const result = await prisma.users.create({ data: payload });
     return result;
 }
 

@@ -1,15 +1,15 @@
 import app from './app';
 import config from './config';
-import { toNodeHandler } from "better-auth/node";
-import { auth } from './lib/auth';
+// import { env } from './config/env';
 
 
+const port = process.env.PORT;
 async function main() {
   try {
 
- 
-    app.listen(config.port, () => {
-      console.log(`Example app listening on port ${config.port}`);
+
+    app.listen(port, () => {
+      console.log(`MediStore listening on port ${port}`);
     });
   } catch (err) {
     console.log(err);
@@ -17,3 +17,7 @@ async function main() {
 }
 
 main();
+
+
+
+// feat: implement database schema and environment configuration
