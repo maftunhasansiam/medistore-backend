@@ -2,8 +2,6 @@ import express, { type NextFunction, type Application, type Request, type Respon
 import cors from 'cors';
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
-// import { userRouter } from "./module/auth/auth.route";
-// import { generateOrderNumber } from "./ui/generateOrderNumber";
 import {userRouter } from './modules/Auth/auth.route';
 
 
@@ -19,7 +17,7 @@ app.use(
     credentials: true,
   }),
 );
-// app.use('/api/auth', AuthRoutes);
+
 app.all("/api/auth/*splat", toNodeHandler(auth));
 // application routes
 
