@@ -1,12 +1,16 @@
-import { create } from "node:domain";
 import { prisma } from "../../lib/prisma";
 
-const createUserIntoDb = async (payload: any) => {
-    const result = await prisma.users.create({ data: payload });
+// Fetch all users
+const createUser = async () => {
+  try {
+    const result = await prisma.user.findMany();
     return result;
-}
+  } catch (error) {
+    console.error("Error in userService.createUser:", error);
+    throw new Error("Failed to fetch users");
+  }
+};
 
-export const AuthService = {
-    // Add service methods here
-    createUserIntoDb
+export const userService = {
+  createUser,
 };

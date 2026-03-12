@@ -34,7 +34,8 @@ enum PAYMENT_METHOD {
   CASH_ON_DELIVERY
 }
 
-// ================================================ Orders & Order Items===============================================
+// ================================================ Orders & Order Items ================================================
+
 model Order {
   id            String         @id @default(cuid())
   orderNumber   String         @unique
@@ -43,20 +44,20 @@ model Order {
   status        ORDER_STATUS   @default(PENDING)
   paymentMethod PAYMENT_METHOD @default(CASH_ON_DELIVERY)
 
-  subtotal       Float
-  deliveryCharge Float @default(0)
-  discount       Float @default(0)
-  total          Float
+  subtotal       Decimal
+  deliveryCharge Decimal @default(0)
+  discount       Decimal @default(0)
+  total          Decimal
 
-  customerNote String?
-  cancelReason String?
-  deliveredAt  DateTime?
+  customerNote  String?
+  cancelReason  String?
+  deliveredAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  user       Users       @relation(fields: [userId], references: [id])
+  user       user        @relation(fields: [userId], references: [id])
   address    Address     @relation(fields: [addressId], references: [id])
   orderItems OrderItem[]
 
@@ -66,13 +67,12 @@ model Order {
 }
 
 model OrderItem {
-  id         String @id @default(cuid())
+  id         String   @id @default(cuid())
   orderId    String
   medicineId String
   quantity   Int
-  price      Float // Price at time of order
-
-  createdAt DateTime @default(now())
+  price      Decimal
+  createdAt  DateTime @default(now())
 
   // Relations
   order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -81,7 +81,7 @@ model OrderItem {
   @@index([orderId])
 }
 
-// ==================================================== Categories & Medicines  =======================================
+// ==================================================== Categories & Medicines =======================================
 
 model Category {
   id          String  @id @default(cuid())
@@ -109,8 +109,8 @@ model Medicine {
   manufacturer         String
   categoryId           String
   sellerId             String
-  price                Float
-  discountPrice        Float?
+  price                Decimal
+  discountPrice        Decimal?
   stock                Int      @default(0)
   dosageForm           String? // Tablet, Capsule, Syrup, etc.
   strength             String? // 500mg, 10ml, etc.
@@ -148,7 +148,7 @@ model CartItem {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user     Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     user     @relation(fields: [userId], references: [id], onDelete: Cascade)
   medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
 
   @@unique([userId, medicineId])
@@ -170,7 +170,7 @@ model Review {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user     Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     user     @relation(fields: [userId], references: [id], onDelete: Cascade)
   medicine Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
 
   @@unique([userId, medicineId])
@@ -198,13 +198,13 @@ model Address {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user   Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   user    @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders Order[]
 
   @@index([userId])
 }
 
-model Users {
+model user {
   id            String      @id @default(cuid())
   name          String
   email         String      @unique
@@ -243,7 +243,7 @@ model SellerProfile {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user      Users?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      user?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   medicines Medicine[]
 
   @@index([userId])
@@ -258,7 +258,7 @@ model Session {
   ipAddress String?
   userAgent String?
   userId    String
-  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@index([userId])
@@ -270,7 +270,7 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?

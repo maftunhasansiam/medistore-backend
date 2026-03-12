@@ -1,24 +1,24 @@
-import { Request, Response } from "express";
-import { prisma } from "../../lib/prisma";
-import { AuthService } from "./auth.service";
+import type { Request, Response } from "express";
+import { userService } from "./auth.service";
 
 const createUser = async (req: Request, res: Response) => {
-    try {
-        const result = await AuthService.createUserIntoDb(req.body);
-        res.status(201).json({
-            success: true,
-            message: 'User created successfully',
-            data: result
-        });
-    } catch (error: any) {
-        console.error(error); // This lets you see the error in your terminal
-        return res.status(400).json({
-            success: false,
-            message: error.message || 'Registration failed'
-        });
-    }
-}
+  try {
+    const result = await userService.createUser();
+    res.status(200).json({
+      success: true,
+      message: "Data retrieved successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    console.error("Error in createUser:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
 
-export const AuthController = {
-    createUser
+export const userController = {
+  createUser,
 };

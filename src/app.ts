@@ -1,8 +1,12 @@
-import express, { Application, Request, Response } from 'express';
+import express, { type NextFunction, type Application, type Request, type Response } from "express";
 import cors from 'cors';
-import { AuthRoutes } from './modules/Auth/auth.route';
-import { auth } from './lib/auth';
-import { fromNodeHeaders, toNodeHandler } from 'better-auth/node';
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth";
+// import { userRouter } from "./module/auth/auth.route";
+// import { generateOrderNumber } from "./ui/generateOrderNumber";
+import {userRouter } from './modules/Auth/auth.route';
+
+
 
 const app: Application = express();
 
@@ -10,12 +14,12 @@ const app: Application = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:3000", // frontend's origin
-    methods: ["GET", "POST", "PUT", "DELETE"], //
-    credentials: true, 
+    origin: process.env.FRONT_END_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   }),
 );
-app.use('/api/auth', AuthRoutes);
+// app.use('/api/auth', AuthRoutes);
 app.all("/api/auth/*splat", toNodeHandler(auth));
 // application routes
 
@@ -24,11 +28,35 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 
-app.get("/api/me", async (req, res) => {
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
+
+// ------------------- Routes -------------------
+app.use("/api/v1", userRouter.router);
+
+app.get("/", async (req: Request, res: Response) => {
+  return res.status(200).json({
+    success: true,
+    message: "API is running",
+    timestamp: new Date().toLocaleString("en-BD", {
+      timeZone: "Asia/Dhaka",
+      hour12: false, // 24-hour format
+    }),
   });
-  return res.json(session);
 });
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const localTime = new Date().toLocaleString("en-BD", {
+    timeZone: "Asia/Dhaka",
+    hour12: false,
+  });
+
+  return res.status(404).json({
+    success: false,
+    message: "Route not found",
+    path: req.path,
+    timestamp: localTime,
+    suggestion: "Please check the URL or API documentation",
+  });
+});
+
 
 export default app;
