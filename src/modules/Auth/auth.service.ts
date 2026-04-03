@@ -1,7 +1,8 @@
+import { USER_STATUS } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
 // Fetch all users
-const viewAllUsers = async () => {
+const getAllUsers = async () => {
   try {
     const users = await prisma.user.findMany();
 
@@ -12,7 +13,7 @@ const viewAllUsers = async () => {
   }
 };
 
-const viewSingleUser = async (id: string) => {
+const getCurrentUser = async (id: string) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
@@ -28,7 +29,28 @@ const viewSingleUser = async (id: string) => {
   }
 };
 
+const updatedUser = async (id: string, status: USER_STATUS) => {
+  try {
+    const result = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+      },
+    });
+    return result;
+  } catch (error) {
+    console.error("Error Updating users:", error);
+    throw new Error("Failed to Update users from database");
+  }
+};
+
+
+
 export const userService = {
-  viewAllUsers,
-  viewSingleUser,
+  getAllUsers,
+  getCurrentUser,
+  updatedUser
+
 };

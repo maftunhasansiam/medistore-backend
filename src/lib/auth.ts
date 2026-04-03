@@ -70,12 +70,12 @@ export const auth = betterAuth({
                 If you didn't request this verification, you can safely ignore this email.
               </p>
             </div>
-          `,
+          `,  
         });
 
-        console.log("✅ Verification email sent successfully:", info.messageId);
+        console.log(" Verification email sent successfully:", info.messageId);
       } catch (error) {
-        console.error("❌ Failed to send verification email:", error);
+        console.error(" Failed to send verification email:", error);
         throw error; // Important: throw error so better-auth can handle it
       }
     },

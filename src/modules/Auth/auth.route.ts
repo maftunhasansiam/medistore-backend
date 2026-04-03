@@ -4,12 +4,9 @@ import authGuard from "../../guard/auth.guard";
 import { ROLE } from "../../../generated/prisma/enums";
 
 const router = Router();
-router.get(
-    "/user",
-    authGuard(ROLE.ADMIN, ROLE.SELLER, ROLE.CUSTOMER),
-    userController.viewAllUsers,
-);
-router.get("/user/:id", userController.viewSingleUser);
+router.get("/admin/users", authGuard(ROLE.ADMIN), userController.getAllUsers);
+router.get("/", authGuard(), userController.getCurrentUser);
+router.patch("/admin/users/:id", authGuard(ROLE.ADMIN), userController.updatedUser);
 
 
-export const userRouter = { router };
+export const userRouter = router ;

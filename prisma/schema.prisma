@@ -44,14 +44,14 @@ model Order {
   status        ORDER_STATUS   @default(PENDING)
   paymentMethod PAYMENT_METHOD @default(CASH_ON_DELIVERY)
 
-  subtotal       Decimal
-  deliveryCharge Decimal @default(0)
-  discount       Decimal @default(0)
-  total          Decimal
+  subtotal       Decimal @db.Decimal(10, 2)
+  deliveryCharge Decimal @default(0) @db.Decimal(10, 2)
+  discount       Decimal @default(0) @db.Decimal(10, 2)
+  total          Decimal @db.Decimal(10, 2)
 
-  customerNote  String?
-  cancelReason  String?
-  deliveredAt   DateTime?
+  customerNote String?
+  cancelReason String?
+  deliveredAt  DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,7 +71,7 @@ model OrderItem {
   orderId    String
   medicineId String
   quantity   Int
-  price      Decimal
+  price      Decimal  @db.Decimal(10, 2)
   createdAt  DateTime @default(now())
 
   // Relations
@@ -84,33 +84,35 @@ model OrderItem {
 // ==================================================== Categories & Medicines =======================================
 
 model Category {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  slug        String  @unique
+  id          String   @id @default(cuid())
+  name        String
+  slug        String
   description String?
   image       String?
-  isActive    Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive    Boolean  @default(true)
+  userId      String
+  user        user     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relations
   medicines Medicine[]
 
-  @@index([slug])
+  @@unique([slug, userId])
+  @@index([userId])
 }
 
 model Medicine {
   id                   String   @id @default(cuid())
   name                 String
-  slug                 String   @unique
+  slug                 String
   description          String
-  genericName          String?
   manufacturer         String
+  price                Decimal  @db.Decimal(10, 2)
+  genericName          String?
   categoryId           String
   sellerId             String
-  price                Decimal
-  discountPrice        Decimal?
+  discountPrice        Decimal? @db.Decimal(10, 2)
   stock                Int      @default(0)
   dosageForm           String? // Tablet, Capsule, Syrup, etc.
   strength             String? // 500mg, 10ml, etc.
@@ -119,17 +121,18 @@ model Medicine {
   images               String[] // Array of image URLs
   isActive             Boolean  @default(true)
   isFeatured           Boolean  @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   // Relations
-  category   Category      @relation(fields: [categoryId], references: [id])
+
+  category   Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   seller     SellerProfile @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   orderItems OrderItem[]
   reviews    Review[]
   cartItems  CartItem[]
 
+  @@unique([slug, sellerId])
   @@index([slug])
   @@index([categoryId])
   @@index([sellerId])
@@ -225,6 +228,7 @@ model user {
   sellerProfile SellerProfile?
   sessions      Session[]
   accounts      Account[]
+  category      Category[]
 
   @@index([role])
   @@map("user")
@@ -243,7 +247,7 @@ model SellerProfile {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user      user?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      user?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   medicines Medicine[]
 
   @@index([userId])

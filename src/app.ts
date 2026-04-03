@@ -3,7 +3,9 @@ import cors from 'cors';
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import {userRouter } from './modules/Auth/auth.route';
-
+import { medicineRouter } from "./modules/medicine/medicine.route";
+import { OrderRouter } from "./modules/Orders/orders.route";
+import { categoriesRouter } from "./modules/categories/categories.route";
 
 
 const app: Application = express();
@@ -28,7 +30,16 @@ app.get('/', (req: Request, res: Response) => {
 
 
 // ------------------- Routes -------------------
-app.use("/api/v1", userRouter.router);
+
+app.use("/api", userRouter);
+app.use("/api/auth", userRouter);
+app.use("/api/seller", medicineRouter);
+app.use("/api", categoriesRouter);
+
+
+app.use("/api/medicines", medicineRouter);
+// app.use("/api/orders", OrderRouter);
+// app.use("/api/seller", OrderRouter);
 
 app.get("/", async (req: Request, res: Response) => {
   return res.status(200).json({

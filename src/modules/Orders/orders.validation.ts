@@ -1,6 +1,6 @@
 
 // import { z } from 'zod';
 
-export const authValidationSchema = {
+export const ordersValidationSchema = {
     // Add validation schemas here
     };
