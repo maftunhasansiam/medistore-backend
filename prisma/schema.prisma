@@ -103,26 +103,31 @@ model Category {
 }
 
 model Medicine {
-  id                   String   @id @default(cuid())
+  id                   String    @id @default(cuid())
   name                 String
   slug                 String
   description          String
   manufacturer         String
-  price                Decimal  @db.Decimal(10, 2)
+  price                Decimal   @db.Decimal(10, 2)
   genericName          String?
   categoryId           String
   sellerId             String
-  discountPrice        Decimal? @db.Decimal(10, 2)
-  stock                Int      @default(0)
-  dosageForm           String? // Tablet, Capsule, Syrup, etc.
-  strength             String? // 500mg, 10ml, etc.
-  prescriptionRequired Boolean  @default(false)
+  discountPrice        Decimal?  @db.Decimal(10, 2)
+  stock                Int       @default(0)
+  dosageForm           String?
+  strength             String?
+  prescriptionRequired Boolean   @default(false)
   image                String?
-  images               String[] // Array of image URLs
-  isActive             Boolean  @default(true)
-  isFeatured           Boolean  @default(false)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  images               String[]
+  isActive             Boolean   @default(true)
+  isFeatured           Boolean   @default(false)
+  tags                 String[]
+  rating               Decimal?  @db.Decimal(2, 1)
+  views                Int?      @default(0)
+  metaDescription      String?
+  deletedAt            DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   // Relations
 
@@ -131,12 +136,16 @@ model Medicine {
   orderItems OrderItem[]
   reviews    Review[]
   cartItems  CartItem[]
+  
+  // Unique & Indexes
 
   @@unique([slug, sellerId])
   @@index([slug])
   @@index([categoryId])
   @@index([sellerId])
   @@index([isActive])
+  @@index([name])
+  @@index([manufacturer])
 }
 
 // =======================================================  Cart Item =================================================

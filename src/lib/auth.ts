@@ -30,7 +30,7 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false, // after implementing email verification, set this to true
   },
 
   emailVerification: {

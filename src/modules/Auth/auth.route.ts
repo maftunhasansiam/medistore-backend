@@ -5,8 +5,10 @@ import { ROLE } from "../../../generated/prisma/enums";
 
 const router = Router();
 router.get("/admin/users", authGuard(ROLE.ADMIN), userController.getAllUsers);
-router.get("/", authGuard(), userController.getCurrentUser);
+router.get("/auth", authGuard(), userController.getCurrentUser);
 router.patch("/admin/users/:id", authGuard(ROLE.ADMIN), userController.updatedUser);
+router.delete("/admin/:userId", authGuard(ROLE.ADMIN), userController.deleteUserByAdmin,);
+router.delete("/users", authGuard(), userController.deleteMyAccount);
 
 
-export const userRouter = router ;
+export const userRouter = router;
