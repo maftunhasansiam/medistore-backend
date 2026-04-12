@@ -8,6 +8,7 @@ import { OrderRouter } from "./modules/Orders/orders.route";
 import { categoriesRouter } from "./modules/categories/categories.route";
 import { sellerRouter } from "./modules/SellerProfile/sellerProfile.route";
 import { addressRouter } from "./modules/Address/address.route";
+import { cartItemRouter } from "./modules/CartItem/cartItem.route";
 
 
 const app: Application = express();
@@ -41,6 +42,8 @@ app.use("/api", sellerRouter);
 app.use("/api/medicines", medicineRouter);
 app.use("/api", OrderRouter);
 app.use("/api/address", addressRouter);
+app.use("/api/cart-item", cartItemRouter);
+
 
 app.get("/", async (req: Request, res: Response) => {
   return res.status(200).json({
