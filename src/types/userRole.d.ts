@@ -4,4 +4,5 @@ const role = {
     CUSTOMER: "CUSTOMER",
 };
 
-export { role };
+type USER_ROLE = "ADMIN" | "SELLER" | "CUSTOMER";
+export { USER_ROLE };

@@ -40,7 +40,7 @@ app.use("/api/seller", medicineRouter);
 app.use("/api", sellerRouter);
 
 app.use("/api/medicines", medicineRouter);
-app.use("/api", OrderRouter);
+app.use("/api/orders", OrderRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/cart-item", cartItemRouter);
 
