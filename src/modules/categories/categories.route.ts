@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { CategoriesController } from "./categories.controller";
 import authGuard from "../../guard/auth.guard";
-import { ROLE } from "../../../generated/prisma/client";
+import { ROLE } from "../../generated/prisma/client";
 const router = Router();
 router.post("/categories", authGuard(ROLE.ADMIN, ROLE.SELLER), CategoriesController.createCategories,);
 router.get("/categories", CategoriesController.getAllCategory);
